@@ -227,6 +227,59 @@
     font-size:9.5px; letter-spacing:.18em; color:rgba(160,225,255,.9); text-shadow:0 0 6px rgba(57,213,255,.7);
   }
   @media (max-width:640px){ #joy{width:96px; height:110px; left:10px; bottom:50px;} #joyBase{width:96px; height:96px;} #joyKnob{width:44px; height:44px; margin:-22px 0 0 -22px;} }
+  /* Star Wars flight stick — same rig as the Trek stick, yellow trim: drag up/down/left/right */
+  #swJoy{
+    display:none; position:absolute; left:16px; bottom:56px; z-index:5;
+    width:118px; height:132px; touch-action:none; user-select:none; -webkit-user-select:none;
+  }
+  body.cab-sw.sw-on #swJoy{display:block;}
+  #swJoyBase{
+    position:relative; width:118px; height:118px; border-radius:50%;
+    border:2px solid rgba(255,232,31,.55); background:rgba(24,20,0,.42);
+    box-shadow:0 0 16px rgba(255,232,31,.22), inset 0 0 22px rgba(255,232,31,.12);
+  }
+  #swJoyBase::before,#swJoyBase::after{content:""; position:absolute; background:rgba(255,232,31,.3);}
+  #swJoyBase::before{left:50%; top:7px; bottom:7px; width:1px;}
+  #swJoyBase::after{top:50%; left:7px; right:7px; height:1px;}
+  #swJoyKnob{
+    position:absolute; left:50%; top:50%; width:52px; height:52px; margin:-26px 0 0 -26px; border-radius:50%;
+    border:2px solid var(--yellow); background:radial-gradient(circle at 38% 34%, rgba(255,244,160,.5), rgba(50,42,0,.85) 70%);
+    box-shadow:0 0 14px rgba(255,232,31,.55);
+  }
+  #swJoyLabel{
+    margin-top:3px; text-align:center; font-family:"Orbitron",sans-serif; font-weight:700;
+    font-size:9.5px; letter-spacing:.1em; white-space:nowrap; color:rgba(255,240,150,.9); text-shadow:0 0 6px rgba(255,232,31,.7);
+  }
+  /* Battlezone touch drive pad — hold ◀ ▶ to turn, ▲ ▼ to drive forward / back */
+  #bzPad{
+    display:none; position:absolute; left:16px; bottom:56px; z-index:5;
+    touch-action:none; user-select:none; -webkit-user-select:none;
+    grid-template-columns:repeat(3,52px); grid-template-rows:52px 52px 52px auto; gap:4px;
+    grid-template-areas:". up ." "left hub right" ". down ." "label label label";
+  }
+  body.cab-bz.bz-on #bzPad{display:grid;}
+  .bz-btn{
+    appearance:none; cursor:pointer; touch-action:none; user-select:none; -webkit-user-select:none;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    border:2px solid rgba(57,255,106,.6); border-radius:10px; background:rgba(0,22,8,.55);
+    color:#b6ffc6; font-family:"Orbitron",sans-serif; padding:0;
+    box-shadow:0 0 12px rgba(57,255,106,.18), inset 0 0 14px rgba(57,255,106,.08);
+  }
+  .bz-btn .bz-arrow{font-size:19px; line-height:1; text-shadow:0 0 8px rgba(57,255,106,.8);}
+  .bz-btn .bz-cap{font-size:7.5px; font-weight:700; letter-spacing:.14em; margin-top:2px; color:rgba(160,255,180,.85);}
+  .bz-btn.held{background:var(--green); color:#02140a; box-shadow:0 0 18px rgba(57,255,106,.65);}
+  .bz-btn.held .bz-cap{color:#02140a;}
+  .bz-btn.held .bz-arrow{text-shadow:none;}
+  #bzUp{grid-area:up;} #bzLeft{grid-area:left;} #bzRight{grid-area:right;} #bzDown{grid-area:down;}
+  .bz-hub{grid-area:hub; border-radius:50%; border:1px solid rgba(57,255,106,.3); background:rgba(0,22,8,.35); margin:13px;}
+  #bzPadLabel{
+    grid-area:label; margin-top:2px; text-align:center; font-family:"Orbitron",sans-serif; font-weight:700;
+    font-size:9.5px; letter-spacing:.16em; color:rgba(160,255,180,.9); text-shadow:0 0 6px rgba(57,255,106,.7); white-space:nowrap;
+  }
+  @media (max-width:640px){
+    #swJoy{width:96px; height:110px; left:10px; bottom:50px;} #swJoyBase{width:96px; height:96px;} #swJoyKnob{width:44px; height:44px; margin:-22px 0 0 -22px;}
+    #bzPad{left:10px; bottom:50px; grid-template-columns:repeat(3,48px); grid-template-rows:48px 48px 48px auto;}
+  }
   /* Trek start panel: cyan active state for its mode toggle */
   body.cab-trek .mode-btn.active, #trekStart .mode-btn.active{background:var(--cyan); border-color:var(--cyan); color:#03222e; box-shadow:0 0 14px rgba(57,213,255,.5);}
   .game-title.trek{-webkit-text-stroke:2px var(--cyan); text-shadow:0 0 26px rgba(57,213,255,.25);}
@@ -303,6 +356,20 @@
       <div id="joyBase"><div id="joyKnob"></div></div>
       <div id="joyLabel">PITCH · YAW</div>
     </div>
+    <!-- Star Wars flight stick: drag up / down / left / right to steer (iPhone touch) -->
+    <div id="swJoy" aria-label="Star Wars flight stick — drag up, down, left and right to steer">
+      <div id="swJoyBase"><div id="swJoyKnob"></div></div>
+      <div id="swJoyLabel">STEER ↑↓←→</div>
+    </div>
+    <!-- Battlezone touch drive pad: hold to turn & drive (iPhone touch) -->
+    <div id="bzPad" aria-label="Battlezone tank touch controls — left, right, forward, back">
+      <button class="bz-btn" id="bzUp" type="button" aria-label="Drive forward"><span class="bz-arrow">▲</span><span class="bz-cap">FWD</span></button>
+      <button class="bz-btn" id="bzLeft" type="button" aria-label="Turn left"><span class="bz-arrow">◀</span><span class="bz-cap">LEFT</span></button>
+      <div class="bz-hub" aria-hidden="true"></div>
+      <button class="bz-btn" id="bzRight" type="button" aria-label="Turn right"><span class="bz-arrow">▶</span><span class="bz-cap">RIGHT</span></button>
+      <button class="bz-btn" id="bzDown" type="button" aria-label="Drive back — reverse"><span class="bz-arrow">▼</span><span class="bz-cap">BACK</span></button>
+      <div id="bzPadLabel">◀ ▶ TURN · ▲ ▼ DRIVE</div>
+    </div>
 
     <!-- CABINET SELECT -->
     <div class="overlay show" id="cabinetScreen">
@@ -374,8 +441,8 @@
           <div class="phase-card c3"><b>3 · ASTEROIDS</b><p>Evacuation route is through the asteroid field. Blast a path or thread the gaps — survive to the far side.</p></div>
         </div>
         <div class="controls-grid">
-          <span><b>STEER</b> Mouse / touch drag / ←↑↓→ / WASD</span>
-          <span><b>FIRE</b> Click / tap / SPACE</span>
+          <span><b>STEER</b> Joystick (bottom-left) — drag ↑ ↓ ← → · mouse / touch drag / ←↑↓→ / WASD</span>
+          <span><b>FIRE</b> FIRE button / click / tap / SPACE</span>
           <span><b>PAUSE</b> P</span>
           <span><b>RESTART</b> R</span>
         </div>
@@ -395,8 +462,8 @@
         <button class="big-btn yellow" id="againBtn" type="button">↻ &nbsp;FLY AGAIN</button>
         <div><button class="ghost-btn cabBtn" type="button">⇄ &nbsp;CHANGE CABINET</button></div>
         <div class="controls-grid">
-          <span><b>STEER</b> Mouse / touch / arrows / WASD</span>
-          <span><b>FIRE</b> Click / SPACE</span>
+          <span><b>STEER</b> Joystick (bottom-left) / mouse / touch / arrows / WASD</span>
+          <span><b>FIRE</b> FIRE button / click / SPACE</span>
         </div>
       </div>
     </div>
@@ -483,8 +550,8 @@
           <div class="phase-card c3"><b>3 · SURVIVE</b><p>One enemy shell costs you a tank, and you have three. Blocks and pyramids stop shells — use them as cover. Clear the wave quota to advance.</p></div>
         </div>
         <div class="controls-grid">
-          <span><b>STEER</b> ← → rotate · ↑ ↓ drive (or drag)</span>
-          <span><b>FIRE</b> Click / tap / SPACE</span>
+          <span><b>DRIVE</b> Touch pad (bottom-left) — hold ◀ ▶ to turn, ▲ FWD / ▼ BACK to drive · ← → rotate · ↑ ↓ drive (or drag)</span>
+          <span><b>FIRE</b> FIRE button / click / tap / SPACE</span>
           <span><b>PAUSE</b> P</span>
           <span><b>RESTART</b> R</span>
         </div>
@@ -504,8 +571,8 @@
         <button class="big-btn yellow" id="bzAgainBtn" type="button">↻ &nbsp;ROLL OUT AGAIN</button>
         <div><button class="ghost-btn cabBtn" type="button">⇄ &nbsp;CHANGE CABINET</button></div>
         <div class="controls-grid">
-          <span><b>STEER</b> Arrows / WASD / drag</span>
-          <span><b>FIRE</b> Click / SPACE</span>
+          <span><b>DRIVE</b> Touch pad ◀ ▶ ▲ ▼ / arrows / WASD / drag</span>
+          <span><b>FIRE</b> FIRE button / click / SPACE</span>
         </div>
       </div>
     </div>
@@ -678,6 +745,8 @@ G = newGame();
 var aim = { x:0, y:0, tx:0, ty:0 };   // -1..1
 var keys = {};
 var firing = false;
+/* iPhone touch flight stick (bottom-left): deflection steers like a joystick, springs back */
+var swJoy = { active:false, id:null, x:0, y:0 };
 
 var ties=[], fireballs=[], bolts=[], parts=[], towers=[], turrets=[], barriers=[], stars=[], floaters=[];
 var probots=[], walkers=[], asteroids=[];
@@ -977,6 +1046,7 @@ function damagePlayer(){
 }
 function gameOver(){
   G.state='gameover';
+  document.body.classList.remove('sw-on'); swJoyReset();
   var a=aimScreen(); explosion(a.x,a.y,120,'#ff5147',40); explosion(CX,CY,160,'#ffe81f',30);
   SFX.boom(true);
   document.getElementById('finalScore').textContent = G.score.toLocaleString();
@@ -1078,8 +1148,10 @@ function startGame(){
   G = newGame(); G.hi=hi; G.state='playing'; G.mode = selectedMode==='ESB' ? 'ESB' : 'ANH'; G.og = (selectedMode==='OG');
   if(G.og){ G.wave=ogStartWave; G.maxShields = ogStartWave>=7 ? 10 : (ogStartWave>=4 ? 8 : 6); G.shields=G.maxShields; }
   aim.x=0; aim.y=0; aim.tx=0; aim.ty=0;
+  swJoyReset();
   clearEntities(); makeStars();
   show('startScreen',false); show('overScreen',false); show('pauseScreen',false);
+  document.body.classList.add('sw-on');
   if(G.mode==='ESB'){
     enterPhase(PHASE.PROBE);
     showCenter('THE EMPIRE STRIKES BACK','HOTH — DESTROY THE PROBE DROIDS');
@@ -1115,6 +1187,11 @@ function update(dt){
   var kbd = 1.9*dt;
   if(keys.left) aim.tx -= kbd; if(keys.right) aim.tx += kbd;
   if(keys.up) aim.ty -= kbd; if(keys.down) aim.ty += kbd;
+  // touch flight stick: deflection is a steer RATE in all four directions — hold it over and the nose keeps coming round
+  if(swJoy.active || swJoy.x!==0 || swJoy.y!==0){
+    aim.tx += swJoy.x*2.4*dt;
+    aim.ty += swJoy.y*2.4*dt;
+  }
   aim.tx = Math.max(-1,Math.min(1,aim.tx)); aim.ty = Math.max(-1,Math.min(1,aim.ty));
   aim.x += (aim.tx-aim.x)*Math.min(1, dt*14);
   aim.y += (aim.ty-aim.y)*Math.min(1, dt*14);
@@ -1513,6 +1590,42 @@ fireBtn.addEventListener('pointerdown', function(e){ e.preventDefault(); if(G.st
 fireBtn.addEventListener('pointerup', function(){ firing=false; });
 fireBtn.addEventListener('pointerleave', function(){ firing=false; });
 
+/* ---- touch flight stick: drag up / down / left / right to steer (springs back to centre) ---- */
+var swJoyEl=document.getElementById('swJoy'), swJoyBaseEl=document.getElementById('swJoyBase'), swJoyKnobEl=document.getElementById('swJoyKnob');
+function swJoySetKnob(){
+  if(!swJoyBaseEl || !swJoyKnobEl) return;
+  var r=swJoyBaseEl.clientWidth*0.28;
+  swJoyKnobEl.style.transform='translate(' + (swJoy.x*r) + 'px,' + (swJoy.y*r) + 'px)';
+}
+function swJoyReset(){
+  swJoy.active=false; swJoy.id=null; swJoy.x=0; swJoy.y=0; swJoySetKnob();
+}
+function swJoyPoint(e){
+  var r=swJoyBaseEl.getBoundingClientRect();
+  var dx=(e.clientX-(r.left+r.width/2))/(r.width/2);
+  var dy=(e.clientY-(r.top+r.height/2))/(r.height/2);
+  var m=Math.hypot(dx,dy); if(m>1){ dx/=m; dy/=m; }
+  swJoy.x=dx; swJoy.y=dy; swJoySetKnob();
+}
+if(swJoyEl){
+  swJoyEl.addEventListener('pointerdown', function(e){
+    if(window.CAB!=='sw') return;
+    e.preventDefault(); e.stopPropagation();
+    audio();
+    swJoy.active=true; swJoy.id=e.pointerId;
+    try{ swJoyEl.setPointerCapture(e.pointerId); }catch(err){}
+    swJoyPoint(e);
+  });
+  swJoyEl.addEventListener('pointermove', function(e){ if(swJoy.active && e.pointerId===swJoy.id) swJoyPoint(e); });
+  function swJoyRelease(e){
+    if(e.pointerId!==swJoy.id) return;
+    swJoyReset();
+  }
+  swJoyEl.addEventListener('pointerup', swJoyRelease);
+  swJoyEl.addEventListener('pointercancel', swJoyRelease);
+  swJoyEl.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+}
+
 window.addEventListener('keydown', function(e){
   if(window.CAB!=='sw') return;
   var k=e.key.toLowerCase();
@@ -1582,6 +1695,7 @@ for(var oi2=0; oi2<ogwBtns.length; oi2++){
 window.__swSync = syncHUD;
 window.__swToMenu = function(){
   G.state='menu'; firing=false;
+  document.body.classList.remove('sw-on'); swJoyReset();
   show('startScreen',false); show('overScreen',false); show('pauseScreen',false);
   hideCenter(); clearEntities(); syncHUD();
   el.objective.textContent='DESTROY THE TIE FIGHTERS';
@@ -2448,6 +2562,7 @@ function bzDamage(){
 }
 function bzOver(){
   B.state='gameover'; SB.boom(true);
+  document.body.classList.remove('bz-on'); bzPadReset();
   document.getElementById('bzFinalScore').textContent = B.score.toLocaleString();
   document.getElementById('bzFinalWave').textContent = 'REACHED WAVE ' + B.wave;
   setTimeout(function(){ if(B.state==='gameover' && window.CAB==='bz') bzShow('bzOver',true); }, 900);
@@ -2465,10 +2580,11 @@ function startBZ(){
   audio3();
   var hi=B.hi;
   B = newBZ(); B.hi=hi; B.state='playing';
-  keys={}; firing=false;
+  keys={}; firing=false; bzPadReset();
   foes=[]; shells=[]; eshells=[]; bparts=[]; bfloat=[];
   B.quota = 4 + B.wave;
   bzShow('bzStart',false); bzShow('bzOver',false); bzShow('bzPause',false);
+  document.body.classList.add('bz-on');
   bzCenter('WAVE 1','ENEMY ARMOUR INBOUND — CHECK YOUR RADAR');
   B.msgT=2.4; B.spawnT=0.9;
   SB.wave(); bzSync();
@@ -2777,6 +2893,36 @@ var fireBtn=document.getElementById('fireBtn');
 fireBtn.addEventListener('pointerdown', function(e){ if(window.CAB!=='bz') return; e.preventDefault(); if(B.state==='playing'){ firing=true; fireShell(); } });
 fireBtn.addEventListener('pointerup', function(){ if(window.CAB==='bz') firing=false; });
 fireBtn.addEventListener('pointerleave', function(){ if(window.CAB==='bz') firing=false; });
+
+/* ---- iPhone touch drive pad: hold ◀ ▶ to turn, ▲ to drive forward, ▼ to reverse ----
+   Each button drives the same keys the keyboard uses, and captures its own pointer,
+   so two thumbs work at once (hold FWD + ◀ to drive round a corner) while the other
+   thumb stays free for the FIRE button. */
+function bzPadReset(){
+  keys.left=false; keys.right=false; keys.up=false; keys.down=false;
+  var held=document.querySelectorAll('.bz-btn.held');
+  for(var i=0;i<held.length;i++) held[i].classList.remove('held');
+}
+function bzBindPad(b, prop){
+  if(!b) return;
+  b.addEventListener('pointerdown', function(e){
+    if(window.CAB!=='bz') return;
+    e.preventDefault(); e.stopPropagation();
+    audio3();
+    try{ b.setPointerCapture(e.pointerId); }catch(err){}
+    keys[prop]=true; b.classList.add('held');
+  });
+  function off(){ keys[prop]=false; b.classList.remove('held'); }
+  b.addEventListener('pointerup', off);
+  b.addEventListener('pointercancel', off);
+  b.addEventListener('lostpointercapture', off);
+  b.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+}
+bzBindPad(document.getElementById('bzUp'),'up');
+bzBindPad(document.getElementById('bzDown'),'down');
+bzBindPad(document.getElementById('bzLeft'),'left');
+bzBindPad(document.getElementById('bzRight'),'right');
+window.addEventListener('blur', function(){ if(window.CAB==='bz') bzPadReset(); });
 window.addEventListener('keydown', function(e){
   if(window.CAB!=='bz') return;
   var k=e.key.toLowerCase();
@@ -2808,6 +2954,7 @@ document.getElementById('pauseBtn').addEventListener('click', function(){ if(win
 window.__bzSync = bzSync;
 window.__bzToMenu = function(){
   B.state='menu'; firing=false; dragging=false;
+  document.body.classList.remove('bz-on'); bzPadReset();
   bzShow('bzStart',false); bzShow('bzOver',false); bzShow('bzPause',false);
   bzHideCenter(); foes=[]; shells=[]; eshells=[];
   document.getElementById('damageFlash').style.opacity=0;
@@ -3360,7 +3507,7 @@ rbSync();
   }
   window.goCabinet = function(){
     window.CAB='select';
-    document.body.classList.remove('cab-trek');
+    document.body.classList.remove('cab-trek'); document.body.classList.remove('cab-sw'); document.body.classList.remove('cab-bz');
     allToMenu();
     hideAll(); showOv('cabinetScreen');
     neutralBadge();
@@ -3369,18 +3516,18 @@ rbSync();
   neutralBadge();
   document.getElementById('cabSW').addEventListener('click', function(){
     window.CAB='sw';
-    document.body.classList.remove('cab-trek');
+    document.body.classList.remove('cab-trek'); document.body.classList.remove('cab-bz'); document.body.classList.add('cab-sw');
     document.getElementById('waveLabel').textContent='WAVE';
     if(window.__trekToMenu) window.__trekToMenu();
     if(window.__bzToMenu) window.__bzToMenu();
     if(window.__rbToMenu) window.__rbToMenu();
     hideAll(); showOv('startScreen');
     if(window.__swSync) window.__swSync();
-    setHint('SHOOT fireballs to save shields');
+    setHint('STICK (bottom-left) steers — FIRE button shoots');
   });
   document.getElementById('cabTrek').addEventListener('click', function(){
     window.CAB='trek';
-    document.body.classList.add('cab-trek');
+    document.body.classList.add('cab-trek'); document.body.classList.remove('cab-sw'); document.body.classList.remove('cab-bz');
     document.getElementById('waveLabel').textContent='SECTOR';
     if(window.__swToMenu) window.__swToMenu();
     if(window.__bzToMenu) window.__bzToMenu();
@@ -3391,18 +3538,18 @@ rbSync();
   });
   document.getElementById('cabBZ').addEventListener('click', function(){
     window.CAB='bz';
-    document.body.classList.remove('cab-trek');
+    document.body.classList.remove('cab-trek'); document.body.classList.remove('cab-sw'); document.body.classList.add('cab-bz');
     document.getElementById('waveLabel').textContent='WAVE';
     if(window.__swToMenu) window.__swToMenu();
     if(window.__trekToMenu) window.__trekToMenu();
     if(window.__rbToMenu) window.__rbToMenu();
     hideAll(); showOv('bzStart');
     if(window.__bzSync) window.__bzSync();
-    setHint('WATCH the radar — red blips are closing in');
+    setHint('TOUCH PAD drives the tank — FIRE with the red button');
   });
   document.getElementById('cabRB').addEventListener('click', function(){
     window.CAB='rb';
-    document.body.classList.remove('cab-trek');
+    document.body.classList.remove('cab-trek'); document.body.classList.remove('cab-sw'); document.body.classList.remove('cab-bz');
     document.getElementById('waveLabel').textContent='WAVE';
     if(window.__swToMenu) window.__swToMenu();
     if(window.__trekToMenu) window.__trekToMenu();
